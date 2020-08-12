@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class ProductController extends CI_Controller {
+class ProductController extends CI_Controller
+{
 
 	public function __construct()
 	{
@@ -32,7 +33,7 @@ class ProductController extends CI_Controller {
 			$data['arr_kategori'] = $this->mcore->get('category', '*', NULL, 'nama', 'ASC', NULL, NULL);
 			$data['arr_satuan']   = $this->mcore->get('unit', '*', NULL, 'nama', 'ASC', NULL, NULL);
 			$this->template->template($data);
-		}else{
+		} else {
 			$cur_date    = new DateTime('now');
 			$id          = $this->uuid->v4();
 			$barcode     = $this->input->post('barcode');
@@ -41,17 +42,17 @@ class ProductController extends CI_Controller {
 			$alias       = $this->input->post('alias');
 			$id_kategori = $this->input->post('id_kategori');
 			$id_satuan   = $this->input->post('id_satuan');
-			$hpp         = $this->input->post('hpp').','.$this->input->post('hpp_decimal');
-			$hpj         = $this->input->post('hpj').','.$this->input->post('hpj_decimal');
-			$hpg         = $this->input->post('hpg').','.$this->input->post('hpg_decimal');
-			$margin_hpj  = $this->input->post('margin_hpj').','.$this->input->post('margin_hpj_decimal');
-			$margin_hpg  = $this->input->post('margin_hpg').','.$this->input->post('margin_hpg_decimal');
+			$hpp         = $this->input->post('hpp') . ',' . $this->input->post('hpp_decimal');
+			$hpj         = $this->input->post('hpj') . ',' . $this->input->post('hpj_decimal');
+			$hpg         = $this->input->post('hpg') . ',' . $this->input->post('hpg_decimal');
+			$margin_hpj  = $this->input->post('margin_hpj') . ',' . $this->input->post('margin_hpj_decimal');
+			$margin_hpg  = $this->input->post('margin_hpg') . ',' . $this->input->post('margin_hpg_decimal');
 			$qty         = '0,00';
 			$foto        = $this->input->post('foto');
 			$created_at  = $cur_date->format('Y-m-d H:i:s');
-			$created_by  = $this->session->userdata(SESS.'id');
+			$created_by  = $this->session->userdata(SESS . 'id');
 			$updated_at  = $cur_date->format('Y-m-d H:i:s');
-			$updated_by  = $this->session->userdata(SESS.'id');
+			$updated_by  = $this->session->userdata(SESS . 'id');
 			$deleted_at  = NULL;
 			$deleted_by  = NULL;
 
@@ -79,15 +80,14 @@ class ProductController extends CI_Controller {
 			);
 			$exec = $this->mcore->store('product', $object);
 
-			if($exec === TRUE){
+			if ($exec === TRUE) {
 				$this->session->set_flashdata('success', TRUE);
-			}else{
+			} else {
 				$this->session->set_flashdata('error', TRUE);
 			}
 
-			redirect(site_url().'admin/product/create','refresh');
+			redirect(site_url() . 'admin/product/create', 'refresh');
 		}
-
 	}
 
 	public function kode_check($str)
@@ -154,15 +154,15 @@ class ProductController extends CI_Controller {
 		$alias       = $this->input->post('alias');
 		$id_kategori = $this->input->post('id_kategori');
 		$id_satuan   = $this->input->post('id_satuan');
-		$hpp         = $this->input->post('hpp').'.'.$this->input->post('hpp_decimal');
-		$hpj         = $this->input->post('hpj').'.'.$this->input->post('hpj_decimal');
-		$hpg         = $this->input->post('hpg').'.'.$this->input->post('hpg_decimal');
-		$margin_hpj  = $this->input->post('margin_hpj').'.'.$this->input->post('margin_hpj_decimal');
-		$margin_hpg  = $this->input->post('margin_hpg').'.'.$this->input->post('margin_hpg_decimal');
+		$hpp         = $this->input->post('hpp') . '.' . $this->input->post('hpp_decimal');
+		$hpj         = $this->input->post('hpj') . '.' . $this->input->post('hpj_decimal');
+		$hpg         = $this->input->post('hpg') . '.' . $this->input->post('hpg_decimal');
+		$margin_hpj  = $this->input->post('margin_hpj') . '.' . $this->input->post('margin_hpj_decimal');
+		$margin_hpg  = $this->input->post('margin_hpg') . '.' . $this->input->post('margin_hpg_decimal');
 		$qty         = $this->input->post('qty');
 		$foto        = $this->input->post('foto');
 		$updated_at  = $cur_date->format('Y-m-d H:i:s');
-		$updated_by  = $this->session->userdata(SESS.'id');
+		$updated_by  = $this->session->userdata(SESS . 'id');
 
 		$object = compact(
 			'barcode',
@@ -179,14 +179,14 @@ class ProductController extends CI_Controller {
 			'qty',
 			'foto',
 			'updated_at',
-			'updated_by',
+			'updated_by'
 		);
 		$where  = ['id' => $id];
 		$exec   = $this->mcore->update('product', $object, $where);
 
-		if($exec){
+		if ($exec) {
 			$ret = ['code' => 200];
-		}else{
+		} else {
 			$ret = ['code' => 500];
 		}
 
@@ -200,14 +200,14 @@ class ProductController extends CI_Controller {
 
 		$object = [
 			'deleted_at' => $cur_date->format('Y-m-d H:i:s'),
-			'deleted_by' => $this->session->userdata(SESS.'id'),
+			'deleted_by' => $this->session->userdata(SESS . 'id'),
 		];
 		$where  = ['id' => $id];
 		$exec   = $this->mcore->update('product', $object, $where);
 
-		if($exec){
+		if ($exec) {
 			$ret = ['code' => 200];
-		}else{
+		} else {
 			$ret = ['code' => 500];
 		}
 
@@ -220,15 +220,14 @@ class ProductController extends CI_Controller {
 		$kode    = $this->input->get('kode');
 		$count   = $this->mless->check_kode($barcode, $kode);
 
-		if($count == 0){
+		if ($count == 0) {
 			$ret = ['code' => 200];
-		}else{
+		} else {
 			$ret = ['code' => 500];
 		}
 
 		echo json_encode($ret);
 	}
-
 }
 
 /* End of file ProductController.php */

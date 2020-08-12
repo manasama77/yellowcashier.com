@@ -7,7 +7,7 @@ $route['init/admin']           = 'InitController/init_admin';
 
 //////////////////////////////////////////////////////////// LOGIN ADMIN
 $route['default_controller'] = 'LoginController/index';
-$route['login/as']           = 'LoginController/as';
+$route['login_as']     = 'LoginController/login_as';
 $route['logout']             = 'LoginController/logout';
 
 //////////////////////////////////////////////////////////// ADMIN

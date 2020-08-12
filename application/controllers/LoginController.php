@@ -1,7 +1,9 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class LoginController extends CI_Controller {
+class LoginController extends CI_Controller
+{
+	private $cookies_name = 'yellowcashier';
 
 	public function __construct()
 	{
@@ -9,16 +11,14 @@ class LoginController extends CI_Controller {
 		$this->load->helper(['cookie', 'string']);
 	}
 
-	private $cookies_name = 'yellowcashier';
-
 	public function index()
 	{
 		$cookies = get_cookie($this->cookies_name);
 
-		if($cookies != NULL){
+		if ($cookies != NULL) {
 			$check_cookies = $this->mcore->get('admin', '*', ['cookies' => $cookies], NULL, 'ASC', NULL, NULL);
 
-			if($check_cookies->num_rows() == 1){
+			if ($check_cookies->num_rows() == 1) {
 				$id       = $check_cookies->row()->id;
 				$username = $check_cookies->row()->username;
 				$nama     = $check_cookies->row()->nama;
@@ -26,26 +26,24 @@ class LoginController extends CI_Controller {
 
 				$this->_set_session($id, $username, $nama, $role);
 
-				if($role == 'master'){
-					redirect(base_url().'login/as','refresh');
-				}elseif($role == 'admin'){
-					redirect(base_url().'admin/dashboard','refresh');
-				}else{
-					redirect(base_url().'kasir/index','refresh');
+				if ($role == 'master') {
+					redirect(base_url() . 'login_as', 'refresh');
+				} elseif ($role == 'admin') {
+					redirect(base_url() . 'admin/dashboard', 'refresh');
+				} else {
+					redirect(base_url() . 'kasir/index', 'refresh');
 				}
-
-			}else{
+			} else {
 				delete_cookie($this->cookies_name);
-				redirect(site_url(),'refresh');
+				redirect(site_url(), 'refresh');
 			}
-
-		}else{
+		} else {
 			$this->form_validation->set_rules('username', 'Username', 'callback_username_check');
 			$this->form_validation->set_rules('password', 'Password', 'callback_password_check');
 
 			if ($this->form_validation->run() === FALSE) {
 				$this->load->view('login/index');
-			}else{
+			} else {
 				$username = $this->input->post('username');
 				$where = [
 					'username'   => $username,
@@ -61,20 +59,19 @@ class LoginController extends CI_Controller {
 				$this->_set_session($id, $username, $nama, $role);
 
 				$remember = $this->input->post('remember');
-				if($remember == 'on'){
+				if ($remember == 'on') {
 					$key_cookies = random_string('alnum', 64);
-					set_cookie($this->cookies_name, $key_cookies, 3600*24*30);
-					$this->mcore->update('admin', ['cookies' => $key_cookies, 'remember' => '1'], ['id' => $id]);	
+					set_cookie($this->cookies_name, $key_cookies, 3600 * 24 * 30);
+					$this->mcore->update('admin', ['cookies' => $key_cookies, 'remember' => '1'], ['id' => $id]);
 				}
 
-				if($role == 'master'){
-					redirect(base_url().'login/as','refresh');
-				}elseif($role == 'admin'){
-					redirect(base_url().'admin/dashboard','refresh');
-				}else{
-					redirect(base_url().'kasir/index','refresh');
+				if ($role == 'master') {
+					redirect(base_url() . 'login_as', 'refresh');
+				} elseif ($role == 'admin') {
+					redirect(base_url() . 'admin/dashboard', 'refresh');
+				} else {
+					redirect(base_url() . 'kasir/index', 'refresh');
 				}
-
 			}
 		}
 	}
@@ -104,38 +101,38 @@ class LoginController extends CI_Controller {
 		];
 		$arr = $this->mcore->get('admin', '*', $where, NULL, 'ASC', NULL, NULL);
 
-		if(password_verify($str.UYAH, $arr->row()->password) === FALSE){
+		if (password_verify($str . UYAH, $arr->row()->password) === FALSE) {
 			$this->form_validation->set_message('password_check', '{field} Salah, silahkan cek kembali');
 			return FALSE;
-		}else{
+		} else {
 			return TRUE;
 		}
 	}
 
 	public function _set_session($id, $username, $nama, $role)
 	{
-		$this->session->set_userdata(SESS.'id', $id);
-		$this->session->set_userdata(SESS.'username', $username);
-		$this->session->set_userdata(SESS.'nama', $nama);
-		$this->session->set_userdata(SESS.'role', $role);
+		$this->session->set_userdata(SESS . 'id', $id);
+		$this->session->set_userdata(SESS . 'username', $username);
+		$this->session->set_userdata(SESS . 'nama', $nama);
+		$this->session->set_userdata(SESS . 'role', $role);
 	}
 
 	public function logout()
 	{
 		delete_cookie($this->cookies_name);
-		$this->session->unset_userdata(SESS.'id');
-		$this->session->unset_userdata(SESS.'username');
-		$this->session->unset_userdata(SESS.'nama');
-		$this->session->unset_userdata(SESS.'role');
-		redirect(site_url().'','refresh');
+		$this->session->unset_userdata(SESS . 'id');
+		$this->session->unset_userdata(SESS . 'username');
+		$this->session->unset_userdata(SESS . 'nama');
+		$this->session->unset_userdata(SESS . 'role');
+		redirect(site_url(), 'refresh');
 	}
 
-	public function as()
+	public function login_as()
 	{
-		$id       = $this->session->userdata(SESS.'id');
-		$username = $this->session->userdata(SESS.'username');
-		$nama     = $this->session->userdata(SESS.'nama');
-		$role     = $this->session->userdata(SESS.'role');
+		$id       = $this->session->userdata(SESS . 'id');
+		$username = $this->session->userdata(SESS . 'username');
+		$nama     = $this->session->userdata(SESS . 'nama');
+		$role     = $this->session->userdata(SESS . 'role');
 
 		$where = [
 			'id'       => $id,
@@ -145,13 +142,12 @@ class LoginController extends CI_Controller {
 		];
 		$count = $this->mcore->count('admin', $where);
 
-		if($count == 0){
-			redirect(site_url().'logout','refresh');
-		}else{
+		if ($count == 0) {
+			redirect(site_url() . 'logout', 'refresh');
+		} else {
 			$this->load->view('login/as');
 		}
 	}
-
 }
 
 /* End of file LoginController.php */

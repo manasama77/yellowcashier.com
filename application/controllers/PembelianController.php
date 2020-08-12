@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class PembelianController extends CI_Controller {
+class PembelianController extends CI_Controller
+{
 
 	public function __construct()
 	{
@@ -23,6 +24,8 @@ class PembelianController extends CI_Controller {
 		$data['title']   = 'List Pembelian';
 		$data['content'] = 'pembelian/form';
 		$data['vitamin'] = 'pembelian/form_vitamin';
+		$data['arr_kategori'] = $this->mcore->get('category', '*');
+		$data['arr_satuan'] = $this->mcore->get('unit', '*');
 		$this->template->template($data);
 	}
 
@@ -90,15 +93,15 @@ class PembelianController extends CI_Controller {
 		$alias       = $this->input->post('alias');
 		$id_kategori = $this->input->post('id_kategori');
 		$id_satuan   = $this->input->post('id_satuan');
-		$hpp         = $this->input->post('hpp').'.'.$this->input->post('hpp_decimal');
-		$hpj         = $this->input->post('hpj').'.'.$this->input->post('hpj_decimal');
-		$hpg         = $this->input->post('hpg').'.'.$this->input->post('hpg_decimal');
-		$margin_hpj  = $this->input->post('margin_hpj').'.'.$this->input->post('margin_hpj_decimal');
-		$margin_hpg  = $this->input->post('margin_hpg').'.'.$this->input->post('margin_hpg_decimal');
+		$hpp         = $this->input->post('hpp') . '.' . $this->input->post('hpp_decimal');
+		$hpj         = $this->input->post('hpj') . '.' . $this->input->post('hpj_decimal');
+		$hpg         = $this->input->post('hpg') . '.' . $this->input->post('hpg_decimal');
+		$margin_hpj  = $this->input->post('margin_hpj') . '.' . $this->input->post('margin_hpj_decimal');
+		$margin_hpg  = $this->input->post('margin_hpg') . '.' . $this->input->post('margin_hpg_decimal');
 		$qty         = $this->input->post('qty');
 		$foto        = $this->input->post('foto');
 		$updated_at  = $cur_date->format('Y-m-d H:i:s');
-		$updated_by  = $this->session->userdata(SESS.'id');
+		$updated_by  = $this->session->userdata(SESS . 'id');
 
 		$object = compact(
 			'barcode',
@@ -115,14 +118,14 @@ class PembelianController extends CI_Controller {
 			'qty',
 			'foto',
 			'updated_at',
-			'updated_by',
+			'updated_by'
 		);
 		$where  = ['id' => $id];
 		$exec   = $this->mcore->update('pembelian', $object, $where);
 
-		if($exec){
+		if ($exec) {
 			$ret = ['code' => 200];
-		}else{
+		} else {
 			$ret = ['code' => 500];
 		}
 
@@ -136,14 +139,14 @@ class PembelianController extends CI_Controller {
 
 		$object = [
 			'deleted_at' => $cur_date->format('Y-m-d H:i:s'),
-			'deleted_by' => $this->session->userdata(SESS.'id'),
+			'deleted_by' => $this->session->userdata(SESS . 'id'),
 		];
 		$where  = ['id' => $id];
 		$exec   = $this->mcore->update('pembelian', $object, $where);
 
-		if($exec){
+		if ($exec) {
 			$ret = ['code' => 200];
-		}else{
+		} else {
 			$ret = ['code' => 500];
 		}
 
@@ -156,15 +159,14 @@ class PembelianController extends CI_Controller {
 		$kode    = $this->input->get('kode');
 		$count   = $this->mless->check_kode($barcode, $kode);
 
-		if($count == 0){
+		if ($count == 0) {
 			$ret = ['code' => 200];
-		}else{
+		} else {
 			$ret = ['code' => 500];
 		}
 
 		echo json_encode($ret);
 	}
-
 }
 
 /* End of file PembelianController.php */
